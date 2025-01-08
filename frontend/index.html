@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League Rank Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>League of Legends Rank Tracker</h1>
+    <div class="player-container" id="players"></div>
+
+    <script>
+        const rankImages = {
+            "IRON": "iron.png",
+            "BRONZE": "bronze.png",
+            "SILVER": "silver.png",
+            "GOLD": "gold.png",
+            "PLATINUM": "platinum.png",
+            "EMERALD": "emerald.png",
+            "DIAMOND": "diamond.png",
+            "MASTER": "master.png",
+            "GRANDMASTER": "grandmaster.png",
+            "CHALLENGER": "challenger.png",
+            "UNRANKED": "unranked.png"
+        };
+        
+        async function fetchRanks() {
+            const response = await fetch('http://localhost:3000/summoners');
+            const data = await response.json();
+            
+            // Sort player first based off their rank, division then LP
+            const soloRankedPlayers = data.map(player => {
+                const soloRank = player.rank.find(r => r.queueType === "RANKED_SOLO_5x5");
+                return soloRank ? { ...player, soloRank } : null;
+            }).filter(player => player !== null)
+              .sort((a, b) => {
+                  const rankOrder = ["CHALLENGER", "GRANDMASTER", "MASTER", "DIAMOND", "EMERALD", "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON", "UNRANKED"];
+                  const rankDiff = rankOrder.indexOf(a.soloRank.tier) - rankOrder.indexOf(b.soloRank.tier);
+                  return rankDiff !== 0 ? rankDiff : b.soloRank.leaguePoints - a.soloRank.leaguePoints;
+              });
+            
+            const playersDiv = document.getElementById('players');
+            playersDiv.innerHTML = '';
+            
+            soloRankedPlayers.forEach(player => {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'player';
+                
+                const rankImage = rankImages[player.soloRank.tier] || 'unranked.png'; 
+                // Use a database to get player icon (Need to manually update this to latest patch otherwise new icons won't display)
+                const profileIcon = `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/profileicon/${player.profileIconId}.png`;
+                
+                playerDiv.innerHTML = `
+                    <div class="player-header">
+                        <img src="${profileIcon}" alt="Profile Icon" class="profile-icon">
+                        <h3>${player.name}#${player.tag}</h3>
+                    </div>
+                    <div class="rank-container">
+                        <img src="images/${rankImage}" alt="${player.soloRank.tier}" class="rank-icon">
+                        <div class="rank-overlay">${player.soloRank.rank} - ${player.soloRank.leaguePoints} LP</div>
+                    </div>
+                    <div class="player-info">
+                        <p>Wins: ${player.soloRank.wins} | Losses: ${player.soloRank.losses}</p>
+                        <p><a class="opgg-link" href="https://na.op.gg/summoner/userName=${encodeURIComponent(player.name + '-' + player.tag)}" target="_blank">View on OP.GG</a></p>
+                    </div>
+                `;
+                playersDiv.appendChild(playerDiv);
+            });
+        }
+
+        fetchRanks();
+        setInterval(fetchRanks, 300000); // Auto refreshed every 5 minutes
+    </script>
+</body>
+</html>
