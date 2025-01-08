@@ -52,17 +52,15 @@
                 const profileIcon = `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/profileicon/${player.profileIconId}.png`;
                 
                 playerDiv.innerHTML = `
-                    <div class="player-header">
+                    <div class="player-grid">
                         <img src="${profileIcon}" alt="Profile Icon" class="profile-icon">
-                        <h3>${player.name}#${player.tag}</h3>
-                    </div>
-                    <div class="rank-container">
-                        <img src="images/${rankImage}" alt="${player.soloRank.tier}" class="rank-icon">
-                        <div class="rank-overlay">${player.soloRank.rank} - ${player.soloRank.leaguePoints} LP</div>
-                    </div>
-                    <div class="player-info">
-                        <p>Wins: ${player.soloRank.wins} | Losses: ${player.soloRank.losses}</p>
-                        <p><a class="opgg-link" href="https://na.op.gg/summoner/userName=${encodeURIComponent(player.name + '-' + player.tag)}" target="_blank">View on OP.GG</a></p>
+                        <h3 class="summoner-name">${player.name}#${player.tag}</h3>
+                        <div class="rank-container">
+                            <img src="images/${rankImage}" alt="${player.soloRank.tier}" class="rank-icon">
+                            <span class="rank-overlay">${player.soloRank.rank} - ${player.soloRank.leaguePoints} LP</span>
+                        </div>
+                        <p class="win-loss">Wins: ${player.soloRank.wins} | Losses: ${player.soloRank.losses}</p>
+                        <a class="opgg-link" href="https://na.op.gg/summoner/userName=${encodeURIComponent(player.name + '-' + player.tag)}" target="_blank">View on OP.GG</a>
                     </div>
                 `;
                 playersDiv.appendChild(playerDiv);
