@@ -53,14 +53,22 @@
                 
                 playerDiv.innerHTML = `
                     <div class="player-grid">
-                        <img src="${profileIcon}" alt="Profile Icon" class="profile-icon">
-                        <h3 class="summoner-name">${player.name}#${player.tag}</h3>
+                        <div class="player-icon">
+                            <img src="${profileIcon}" alt="Profile Icon" class="profile-icon">
+                        </div>
+                        <div class="player-name">
+                            <h3>${player.name}#${player.tag}</h3>
+                        </div>
                         <div class="rank-container">
                             <img src="images/${rankImage}" alt="${player.soloRank.tier}" class="rank-icon">
                             <span class="rank-overlay">${player.soloRank.rank} - ${player.soloRank.leaguePoints} LP</span>
                         </div>
-                        <p class="win-loss">Wins: ${player.soloRank.wins} | Losses: ${player.soloRank.losses}</p>
-                        <a class="opgg-link" href="https://na.op.gg/summoner/userName=${encodeURIComponent(player.name + '-' + player.tag)}" target="_blank">View on OP.GG</a>
+                        <div class="win-loss">
+                            <p>Wins: ${player.soloRank.wins} | Losses: ${player.soloRank.losses}</p>
+                        </div>
+                        <div class="opgg">
+                            <p><a class="opgg-link" href="https://na.op.gg/summoner/userName=${encodeURIComponent(player.name + '-' + player.tag)}" target="_blank">View on OP.GG</a></p>
+                        </div>
                     </div>
                 `;
                 playersDiv.appendChild(playerDiv);
