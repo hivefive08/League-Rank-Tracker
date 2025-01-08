@@ -22,32 +22,62 @@ h1 {
 }
 
 .player {
-    display: grid;
-    grid-template-columns: 80px 1fr 120px 150px;
-    align-items: center;
-    padding: 15px;
     background: #2c2c2c;
+    padding: 15px;
     border-radius: 10px;
-    border-left: 5px solid gold;
     box-shadow: 0 2px 4px rgba(255, 215, 0, 0.5);
+    width: 800px; 
+    border-left: 5px solid gold;
 }
 
+.player-grid {
+    display: grid;
+    grid-template-columns: 80px 200px 150px 150px 150px;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
 
-.player-header {
+.profile-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid gold;
+    object-fit: cover;
+}
+
+.player-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.rank-icon {
+    width: 60px;
+    height: 60px;
+}
+
+.rank-container {
     display: flex;
     align-items: center;
     gap: 10px;
+    justify-content: center;
 }
 
-.player {
-    display: grid;
-    grid-template-columns: 80px 1fr 120px 150px; 
-    align-items: center;
-    padding: 15px;
-    background: #2c2c2c;
-    border-radius: 10px;
-    border-left: 5px solid gold;
-    box-shadow: 0 2px 4px rgba(255, 215, 0, 0.5);
+.rank-overlay {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+.win-loss {
+    font-size: 14px;
+    color: #aaa;
+    text-align: center;
+}
+
+.opgg {
+    text-align: center;
 }
 
 .opgg-link {
