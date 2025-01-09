@@ -24,59 +24,70 @@
             "CHALLENGER": "challenger.png",
             "UNRANKED": "unranked.png"
         };
-        
+
         async function fetchRanks() {
-            const response = await fetch('https://league-of-legends-rank-tracker.onrender.com/summoners');
-            const data = await response.json();
-            
-            // Sort player first based off their rank, division then LP
-            const soloRankedPlayers = data.map(player => {
-                const soloRank = player.rank.find(r => r.queueType === "RANKED_SOLO_5x5");
-                return soloRank ? { ...player, soloRank } : null;
-            }).filter(player => player !== null)
-              .sort((a, b) => {
-                  const rankOrder = ["CHALLENGER", "GRANDMASTER", "MASTER", "DIAMOND", "EMERALD", "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON", "UNRANKED"];
-                  const rankDiff = rankOrder.indexOf(a.soloRank.tier) - rankOrder.indexOf(b.soloRank.tier);
-                  return rankDiff !== 0 ? rankDiff : b.soloRank.leaguePoints - a.soloRank.leaguePoints;
-              });
-            
-            const playersDiv = document.getElementById('players');
-            playersDiv.innerHTML = '';
-            
-            soloRankedPlayers.forEach(player => {
-                const playerDiv = document.createElement('div');
-                playerDiv.className = 'player';
-                
-                const rankImage = rankImages[player.soloRank.tier] || 'unranked.png'; 
-                // Use a database to get player icon (Need to manually update this to latest patch otherwise new icons won't display)
-                const profileIcon = `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/profileicon/${player.profileIconId}.png`;
-                
-                playerDiv.innerHTML = `
-                    <div class="player-grid">
-                        <div class="player-icon">
-                            <img src="${profileIcon}" alt="Profile Icon" class="profile-icon">
+            try {
+                const response = await fetch('https://league-of-legends-rank-tracker.onrender.com/summoners');
+                if (!response.ok) throw new Error("Failed to fetch data");
+
+                const data = await response.json();
+
+                // Process ranked & unranked players
+                const soloRankedPlayers = data.map(player => {
+                    const soloRank = player.rank.find(r => r.queueType === "RANKED_SOLO_5x5");
+                    return soloRank ? { ...player, soloRank } : { ...player, soloRank: null };
+                }).sort((a, b) => {
+                    if (!a.soloRank && !b.soloRank) return 0;
+                    if (!a.soloRank) return 1;
+                    if (!b.soloRank) return -1;
+
+                    const rankOrder = ["CHALLENGER", "GRANDMASTER", "MASTER", "DIAMOND", "EMERALD", "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON", "UNRANKED"];
+                    const rankDiff = rankOrder.indexOf(a.soloRank.tier) - rankOrder.indexOf(b.soloRank.tier);
+                    return rankDiff !== 0 ? rankDiff : b.soloRank.leaguePoints - a.soloRank.leaguePoints;
+                });
+
+                const playersDiv = document.getElementById('players');
+                playersDiv.innerHTML = '';
+
+                soloRankedPlayers.forEach(player => {
+                    const playerDiv = document.createElement('div');
+                    playerDiv.className = 'player';
+
+                    const rankImage = player.soloRank ? rankImages[player.soloRank.tier] : "unranked.png";
+                    const profileIcon = `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/profileicon/${player.profileIconId}.png`;
+
+                    playerDiv.innerHTML = `
+                        <div class="player-grid">
+                            <div class="player-icon">
+                                <img src="${profileIcon}" alt="Profile Icon" class="profile-icon">
+                            </div>
+                            <div class="player-name">
+                                <h3>${player.name}#${player.tag}</h3>
+                            </div>
+                            <div class="rank-container">
+                                <img src="images/${rankImage}" alt="${player.soloRank ? player.soloRank.tier : 'UNRANKED'}" class="rank-icon">
+                                <span class="rank-overlay ${!player.soloRank ? 'unranked' : ''}">
+                                    ${player.soloRank ? `${player.soloRank.rank} - ${player.soloRank.leaguePoints} LP` : 'Unranked'}
+                                </span>
+                            </div>
+                            <div class="win-loss">
+                                <p>${player.soloRank ? `Wins: ${player.soloRank.wins} | Losses: ${player.soloRank.losses}` : 'No Ranked Games'}</p>
+                            </div>
+                            <div class="opgg">
+                                <p><a class="opgg-link" href="https://na.op.gg/summoner/userName=${encodeURIComponent(player.name + '-' + player.tag)}" target="_blank">View on OP.GG</a></p>
+                            </div>
                         </div>
-                        <div class="player-name">
-                            <h3>${player.name}#${player.tag}</h3>
-                        </div>
-                        <div class="rank-container">
-                            <img src="images/${rankImage}" alt="${player.soloRank.tier}" class="rank-icon">
-                            <span class="rank-overlay">${player.soloRank.rank} - ${player.soloRank.leaguePoints} LP</span>
-                        </div>
-                        <div class="win-loss">
-                            <p>Wins: ${player.soloRank.wins} | Losses: ${player.soloRank.losses}</p>
-                        </div>
-                        <div class="opgg">
-                            <p><a class="opgg-link" href="https://na.op.gg/summoner/userName=${encodeURIComponent(player.name + '-' + player.tag)}" target="_blank">View on OP.GG</a></p>
-                        </div>
-                    </div>
-                `;
-                playersDiv.appendChild(playerDiv);
-            });
+                    `;
+                    playersDiv.appendChild(playerDiv);
+                });
+
+            } catch (error) {
+                console.error("Error fetching ranks:", error);
+            }
         }
 
         fetchRanks();
-        setInterval(fetchRanks, 300000); // Auto refreshed every 5 minutes
+        setInterval(fetchRanks, 300000); // Auto refresh every 5 minutes
     </script>
 </body>
 </html>
