@@ -41,9 +41,15 @@
                     if (!a.soloRank) return 1;
                     if (!b.soloRank) return -1;
 
+                    // Compare rank by rank tier first then divison order and then lp
                     const rankOrder = ["CHALLENGER", "GRANDMASTER", "MASTER", "DIAMOND", "EMERALD", "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON", "UNRANKED"];
-                    const rankDiff = rankOrder.indexOf(a.soloRank.tier) - rankOrder.indexOf(b.soloRank.tier);
-                    return rankDiff !== 0 ? rankDiff : b.soloRank.leaguePoints - a.soloRank.leaguePoints;
+                    const tierDiff = rankOrder.indexOf(a.soloRank.tier) - rankOrder.indexOf(b.soloRank.tier);
+                    if (tierDiff !== 0) return tierDiff;
+                    const divisionOrder = { "I": 1, "II": 2, "III": 3, "IV": 4 };
+                    const divisionDiff = divisionOrder[a.soloRank.rank] - divisionOrder[b.soloRank.rank];
+                    if (divisionDiff !== 0) return divisionDiff;
+
+                    return b.soloRank.leaguePoints - a.soloRank.leaguePoints; 
                 });
 
                 const playersDiv = document.getElementById('players');
@@ -54,6 +60,7 @@
                     playerDiv.className = 'player';
 
                     const rankImage = player.soloRank ? rankImages[player.soloRank.tier] : "unranked.png";
+                    // Icon will not display properly if they are from new patch (need to manually update patch to latest)
                     const profileIcon = `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/profileicon/${player.profileIconId}.png`;
 
                     playerDiv.innerHTML = `
