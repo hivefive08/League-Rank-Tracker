@@ -32,7 +32,7 @@ h1 {
 
 .player-grid {
     display: grid;
-    grid-template-columns: 80px 220px 150px 150px 150px;
+    grid-template-columns: 80px 220px 180px 180px 120px;
     align-items: center;
     text-align: center;
 }
@@ -77,11 +77,11 @@ h1 {
 .win-loss {
     font-size: 14px;
     color: #aaa;
-    text-align: center;
+    text-align: left;
 }
 
 .opgg {
-    text-align: center;
+    text-align: left;
 }
 
 .opgg-link {
