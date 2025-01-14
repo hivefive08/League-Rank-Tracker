@@ -26,7 +26,7 @@ h1 {
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(255, 215, 0, 0.5);
-    width: 800px; 
+    width: 800px; /* Increased width for better spacing */
     border-left: 5px solid gold;
 }
 
@@ -85,3 +85,41 @@ h1 {
     color: gold;
     font-weight: bold;
 }
+
+@media (max-width: 768px) {
+    .player {
+        flex-direction: column;
+        width: 95%;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .player-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .profile-icon, .rank-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .rank-overlay {
+        font-size: 14px;
+    }
+
+    .win-loss {
+        font-size: 12px;
+    }
+
+    .opgg-link {
+        font-size: 14px;
+    }
+}
+
