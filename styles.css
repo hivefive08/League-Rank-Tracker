@@ -32,10 +32,9 @@ h1 {
 
 .player-grid {
     display: grid;
-    grid-template-columns: 80px 200px 150px 150px 150px;
+    grid-template-columns: 80px 220px 150px 150px 150px;
     align-items: center;
-    gap: 10px;
-    text-align: left;
+    text-align: center;
 }
 
 .profile-icon {
@@ -50,24 +49,29 @@ h1 {
     font-size: 18px;
     font-weight: bold;
     color: white;
+    text-align: left;
+
 }
 
 .rank-icon {
     width: 60px;
     height: 60px;
+    display: block;
+
 }
 
 .rank-container {
     display: flex;
     align-items: center;
-    gap: 10px;
-    justify-content: center;
+    justify-content: left;
+    gap: 5px
 }
 
 .rank-overlay {
     font-size: 16px;
     font-weight: bold;
     color: white;
+    text-align: left;
 }
 
 .win-loss {
